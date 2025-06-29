@@ -1,0 +1,7 @@
+cd C:\Users\jmcdo\OneDrive\Documents\opsadvisor-poc\scripts
+
+set SUPABASE_URL=https://jnwttglnmrcdhexvzahc.supabase.co
+set SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud3R0Z2xubXJjZGhleHZ6YWhjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDc2OTU3NywiZXhwIjoyMDY2MzQ1NTc3fQ.Q9F63Gnl0JxhsOwDG9Fml857OfX7oAl9IA4ziUGpqxQ
+set SERPAPI_KEY=7eca6fdf0cd08a465cb80bb0e43010822548776b606ecd14db9e79762a58560f
+
+python populate_websites.py

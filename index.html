@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ——— Pinnacle HEAD START ——— -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpsAdvisor – Questionnaire & Results</title>
+
+  <!-- Pinnacle theme CSS & icons -->
+  <link rel="stylesheet"
+        href="https://pinnaclesolutionseng.com/wp-content/themes/astra/style.css">
+  <link rel="stylesheet"
+        href="https://pinnaclesolutionseng.com/wp-content/plugins/elementor/assets/css/frontend.min.css">
+  <link rel="stylesheet"
+        href="https://pinnaclesolutionseng.com/wp-content/plugins/elementor/assets/lib/FontAwesome/css/all.min.css">
+  <link rel="icon"
+        href="https://pinnaclesolutionseng.com/wp-content/uploads/2021/10/cropped-pinnacle_favicon-32x32.png"
+        sizes="32x32">
+  <link rel="icon"
+        href="https://pinnaclesolutionseng.com/wp-content/uploads/2021/10/cropped-pinnacle_favicon-192x192.png"
+        sizes="192x192">
+  <!-- ——— Pinnacle HEAD END ——— -->
+
+  <!-- Override + OpsAdvisor custom CSS -->
+  <style>
+    /* Full-page background */
+    body {
+      background: url('https://pinnaclesolutionseng.com/wp-content/uploads/2024/09/617185.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    /* Make OpsAdvisor panels stand out on the bg */
+    #login-screen,
+    #questionnaire-screen,
+    #results-screen {
+      background: rgba(255,255,255,0.9);
+      padding: 1.5rem;
+      border-radius: 6px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    /* Shrink the Pinnacle logo */
+    .site-branding img.custom-logo {
+      max-height: 60px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    /* OpsAdvisor original styles below */
+    label { display: block; margin: 0.5rem 0; }
+    select, input[type="text"], textarea { width: 300px; padding: 0.4rem; }
+    #questionnaire-screen,
+    #results-screen { display: none; }
+    .hidden { display: none !important; }
+    hr { margin: 2rem 0; }
+
+    /* recommendation card */
+    .recommendation {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background: #fff;
+    }
+
+    /* the extra box under each recommendation */
+    .rec-extra {
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      background: #f9f9f9;
+      border-radius: 4px;
+    }
+    .rec-extra p { margin: 0.3rem 0; }
+
+    /* Simple spinner — hidden by default */
+    #spinner {
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 3px solid rgba(0,0,0,0.2);
+      border-top: 3px solid #333;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ——— Pinnacle HEADER ——— -->
+  <header class="site-header">
+    <div class="ast-container">
+      <div class="site-branding">
+        <a class="custom-logo-link" href="https://pinnaclesolutionseng.com">
+          <img width="1200" height="270"
+               src="https://pinnaclesolutionseng.com/wp-content/uploads/2021/10/pinn_logo_white-300x68.png"
+               class="custom-logo"
+               alt="Pinnacle Solutions ENG">
+        </a>
+      </div>
+      <!-- (other nav/widgets as in Pinnacle’s theme) -->
+    </div>
+  </header>
+  <!-- ——— END Pinnacle HEADER ——— -->
+
+  <!-- OpsAdvisor – Login Screen -->
+  <div id="login-screen">
+    <h2>OpsAdvisor – Login</h2>
+    <label>
+      Email:<br>
+      <input id="email" type="email" placeholder="Email" />
+    </label>
+    <label>
+      Password:<br>
+      <input id="password" type="password" placeholder="Password" />
+    </label>
+    <button id="login-btn">Log In</button>
+    <p id="login-error" style="color:red;"></p>
+  </div>
+
+  <!-- OpsAdvisor – Questionnaire Screen -->
+  <div id="questionnaire-screen">
+    <h2>OpsAdvisor – Questionnaire</h2>
+    <label>
+      Industry:<br>
+      <select id="industry"></select>
+    </label>
+    <label>
+      Company Size:<br>
+      <select id="companySize"></select>
+    </label>
+    <label>
+      Priority Features (ctrl+click multi):<br>
+      <select id="priorityFeature" multiple size="6"></select>
+    </label>
+    <label>
+      Pain Points (ctrl+click multi):<br>
+      <select id="painPoint" multiple size="6"></select>
+    </label>
+    <div id="painPointOther-container" class="hidden">
+      <label>
+        Other Pain Point:<br>
+        <input id="painPointOther" type="text" placeholder="Please specify…" />
+      </label>
+    </div>
+    <label>
+      Current Tools:<br>
+      <input id="currentTool" type="text" placeholder="e.g. SAP, Oracle…" />
+    </label>
+    <label>
+      Additional Needs:<br>
+      <textarea id="customNeeds" placeholder="Any custom needs?" rows="3"></textarea>
+    </label>
+    <button id="submit-btn">Submit</button>
+    <div id="spinner"></div>
+    <p id="submit-status"></p>
+
+    <hr/>
+
+    <h2>Schema Introspection (debug)</h2>
+    <button id="load-tables">Load Public Tables</button>
+    <pre id="tables-output"></pre>
+  </div>
+
+  <!-- OpsAdvisor – Results Screen -->
+  <div id="results-screen">
+    <h2>OpsAdvisor – Recommendations</h2>
+    <div id="recs-list"></div>
+    <button id="restart-btn">Start Over</button>
+  </div>
+
+  <!-- Pinnacle FOOTER -->
+  <footer class="site-footer">
+    <div class="site-footer-wrap">
+      <div class="footer-widget-area">
+        <!-- (paste all of Pinnacle’s widgets here exactly as in your theme) -->
+      </div>
+      <div class="site-info">
+        © 2025 Pinnacle Solutions ENG – All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <!-- ——— END Pinnacle FOOTER ——— -->
+
+  <!-- Pinnacle’s JS for Elementor & Astra -->
+  <script src="https://pinnaclesolutionseng.com/wp-content/plugins/elementor/assets/js/frontend.min.js" defer></script>
+  <script src="https://pinnaclesolutionseng.com/wp-content/themes/astra/assets/js/minified/main.min.js" defer></script>
+
+  <!-- OpsAdvisor’s application logic -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

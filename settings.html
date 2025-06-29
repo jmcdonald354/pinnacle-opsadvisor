@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>OpsAdvisor – Model Selector</title>
+  <style>
+    body { font-family: sans-serif; padding:1rem; }
+    label { display:block; margin:0.5rem 0; }
+    select, button { padding:0.5rem; font-size:1rem; }
+    #status { color: green; margin-top:1rem; }
+  </style>
+</head>
+<body>
+  <h2>Select OpenAI Model</h2>
+  <label>
+    Model:
+    <select id="model-select">
+      <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+      <option value="gpt-4">gpt-4</option>
+      <option value="gpt-4o-mini">gpt-4o-mini</option>
+    </select>
+  </label>
+  <button id="save-btn">Save</button>
+  <div id="status"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const select = document.getElementById('model-select');
+      const status = document.getElementById('status');
+      // initialize dropdown from localStorage (or default)
+      const current = localStorage.getItem('OPENAI_MODEL') || 'gpt-3.5-turbo';
+      select.value = current;
+
+      document.getElementById('save-btn').addEventListener('click', () => {
+        const model = select.value;
+        localStorage.setItem('OPENAI_MODEL', model);
+        status.textContent = `Saved model: ${model}`;
+      });
+    });
+  </script>
+</body>
+</html>
