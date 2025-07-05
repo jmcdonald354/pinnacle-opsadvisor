@@ -20,9 +20,10 @@
   "homepage": "https://github.com/jmcdonald354/opsadvisor-poc#readme",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.3",
     "next": "latest",
+    "openai": "^5.8.2",
     "react": "latest",
-    "react-dom": "latest",
-    "openai": "^5.8.2"
+    "react-dom": "latest"
   }
 }
