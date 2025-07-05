@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
+// Initialize Supabase client once per request
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -10,19 +11,22 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  // Log request payload
+  console.log('✅ API received:', req.body)
+
   const {
     userId,
     industry,
-    companySize,
-    priorityFeature,
-    painPoint,
-    painPointOther,
-    currentTool,
-    customNeeds
+    company_size,
+    priority_features,
+    pain_points,
+    current_tools,
+    custom_needs
   } = req.body
 
   try {
-    // ✅ 1) Call OpenAI
+    // ✅ 1) Call OpenAI Chat Completion
+    console.log('🔗 Calling OpenAI...')
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -43,7 +47,6 @@ Industry: ${industry}
 Company Size: ${companySize}
 Priority Features: ${priorityFeature}
 Pain Points: ${painPoint}
-Other Pain Point: ${painPointOther}
 Current Tools: ${currentTool}
 Additional Needs: ${customNeeds}
             `
@@ -53,12 +56,18 @@ Additional Needs: ${customNeeds}
     })
 
     const data = await response.json()
+
     const rawContent = data.choices?.[0]?.message?.content || ''
     const features = rawContent.split(',').map(f => f.trim()).filter(Boolean)
 
-    console.log('Parsed features:', features)
+    console.log('✅ Parsed features:', features)
 
-    // ✅ 2) Insert questionnaire_responses with ALL fields
+    if (!features.length) {
+      console.error('❌ No features parsed.')
+      return res.status(500).json({ error: 'No features parsed from OpenAI.' })
+    }
+
+    // ✅ 2) Insert questionnaire_responses
     const { data: run, error: runError } = await supabase
       .from('questionnaire_responses')
       .insert([
@@ -78,16 +87,18 @@ Additional Needs: ${customNeeds}
       .single()
 
     if (runError) {
-      console.error(runError)
+      console.error('❌ questionnaire_responses insert failed:', runError)
       throw runError
+    } else {
+      console.log('✅ questionnaire_responses insert:', run)
     }
 
     const questionnaireId = run.id
 
-    // ✅ 3) Insert recommendation_runs with correct column
+    // ✅ 3) Insert recommendation_runs
     const inserts = features.map(feature => ({
       questionnaire_id: questionnaireId,
-      feature_name: feature // <-- use correct column!
+      feature_name: feature
     }))
 
     const { error: insertError } = await supabase
@@ -95,16 +106,21 @@ Additional Needs: ${customNeeds}
       .insert(inserts)
 
     if (insertError) {
-      console.error(insertError)
+      console.error('❌ recommendation_runs insert failed:', insertError)
       throw insertError
+    } else {
+      console.log('✅ recommendation_runs insert succeeded')
     }
 
+    // ✅ Done
+    console.log('🚀 Handler complete.')
     res.status(200).json({
       questionnaire_id: questionnaireId,
       raw_result: data
     })
+
   } catch (error) {
-    console.error(error)
+    console.error('❌ Handler failed:', error)
     res.status(500).json({ error: 'Something went wrong' })
   }
 }

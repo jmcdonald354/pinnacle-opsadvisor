@@ -49,6 +49,16 @@ export default function Home() {
     loadDropdowns()
   }, [])
 
+console.log('🚀 handleSubmit payload:', {
+  industry,
+  companySize,
+  priorityFeature,
+  painPoint,
+  painPointOther,
+  currentTool,
+  customNeeds
+})
+
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) setLoginError('Login failed — check credentials.')
@@ -65,6 +75,16 @@ export default function Home() {
       alert("You must be logged in.")
       return
     }
+
+console.log('🚀 handleSubmit payload:', {
+  industry,
+  companySize,
+  priorityFeature,
+  painPoint,
+  painPointOther,
+  currentTool,
+  customNeeds
+})
 
     const res = await fetch('/api/recommend', {
       method: 'POST',
