@@ -1,0 +1,7 @@
+keys.env
+node_modules/
+.next/
+.env.local
+.DS_Store
+*.log
+out/

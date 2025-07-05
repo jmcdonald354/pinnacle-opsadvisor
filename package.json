@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,9 @@
   "homepage": "https://github.com/jmcdonald354/opsadvisor-poc#readme",
   "description": "",
   "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
     "openai": "^5.8.2"
   }
 }
