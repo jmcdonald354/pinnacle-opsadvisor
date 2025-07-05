@@ -44,11 +44,11 @@ export default async function handler(req, res) {
             role: 'user',
             content: `
 Industry: ${industry}
-Company Size: ${companySize}
-Priority Features: ${priorityFeature}
-Pain Points: ${painPoint}
-Current Tools: ${currentTool}
-Additional Needs: ${customNeeds}
+Company Size: ${company_size}
+Priority Features: ${priority_features}
+Pain Points: ${pain_points}
+Current Tools: ${current_tools}
+Additional Needs: ${custom_needs}
             `
           }
         ]
